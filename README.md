@@ -13,7 +13,7 @@ This project is released under a mixed-license model. Different parts of the pro
 **適用範囲:** `original/` および `media/` ディレクトリ内のコンテンツを**除く**、すべてのファイルおよびディレクトリ。
 
 This includes, but is not limited to:
-これには、以下のファイルが含まれますが、これに限定されません。
+これには、以下のファイルが含まれますが、これに限定されません。:
 
   * `index.html`
   * `main.js`
