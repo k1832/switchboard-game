@@ -10,7 +10,7 @@ This project is released under a mixed-license model. Different parts of the pro
 
 **Applies to:** All files and directories **EXCEPT FOR** the contents of the `original/` and `media/` directories.
 
-**適用範囲:** `original/` および `media/` ディレクトリ内のコンテンツを**除く**、すべてのファイルおよびディレクトリ。
+**適用範囲:** `web/original/` および `web/media/` ディレクトリ内のコンテンツを**除く**、すべてのファイルおよびディレクトリ。
 
 This includes, but is not limited to:
 これには、以下のファイルが含まれますが、これに限定されません。:
