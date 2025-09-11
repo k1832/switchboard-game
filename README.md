@@ -8,15 +8,15 @@ This project is released under a mixed-license model. Different parts of the pro
 
 ## 1\. Proprietary License (Primary) / 独自のライセンス（基本）
 
-**Applies to:** All files and directories **EXCEPT FOR** the contents of the `original/` and `media/` directories.
+**Applies to:** All files and directories **EXCEPT FOR** the contents of the `web/original/`, `web/media/`, and `web/libs/` directories.
 
-**適用範囲:** `web/original/` および `web/media/` ディレクトリ内のコンテンツを**除く**、すべてのファイルおよびディレクトリ。
+**適用範囲:** `web/original/` 、 `web/media/` 、および `web/libs/` ディレクトリ内のコンテンツを**除く**、すべてのファイルおよびディレクトリ。
 
 This includes, but is not limited to:
 これには、以下のファイルが含まれますが、これに限定されません。:
 
-  * `index.html`
-  * `main.js`
+  * `web/index.html`
+  * `web/main.js`
 
 **Terms:**
 **条件:**
