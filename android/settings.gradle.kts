@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "switchboard-game"
+rootProject.name = "Switchboard Game"
 include(":app")
+ 

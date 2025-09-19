@@ -1,4 +1,4 @@
-package com.example.switchboard_game
+package com.example.switchboardgame
 
 import org.junit.Test
 

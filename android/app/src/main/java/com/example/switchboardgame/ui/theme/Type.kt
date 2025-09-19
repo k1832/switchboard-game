@@ -1,4 +1,4 @@
-package com.example.switchboard_game.ui.theme
+package com.example.switchboardgame.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

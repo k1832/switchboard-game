@@ -9,15 +9,16 @@ options = {
   bgmVolume: 4,
 };
 
+const audioBasePath = "https://appassets.androidplatform.net/assets/media/";
 audioFiles = {
-  bgm: "./media/Pixelated_Dreams.mp3",
-  conn1: "./media/connecting_1.mp3",
-  conn2: "./media/connecting_2.mp3",
-  conn3: "./media/connecting_3.mp3",
-  conn4: "./media/connecting_4.mp3",
-  conn5: "./media/connecting_5.mp3",
-  conn6: "./media/connecting_6.mp3",
-  conn7: "./media/connecting_7.mp3",
+  bgm: audioBasePath + "Pixelated_Dreams.mp3",
+  conn1: audioBasePath + "connecting_1.mp3",
+  conn2: audioBasePath + "connecting_2.mp3",
+  conn3: audioBasePath + "connecting_3.mp3",
+  conn4: audioBasePath + "connecting_4.mp3",
+  conn5: audioBasePath + "connecting_5.mp3",
+  conn6: audioBasePath + "connecting_6.mp3",
+  conn7: audioBasePath + "connecting_7.mp3",
 };
 
 let plugs;
@@ -28,6 +29,38 @@ let activeConnections;
 let contractsLost;
 let nextRequestTimer;
 let multiplier;
+let highScore = 0;
+
+/**
+ * Saves the best score by calling the native Android interface.
+ * The function in the Android code is called 'saveScore',
+ * and our JavaScript calls it through the 'Android' bridge object.
+ * @param {number} currentScore The player's final score.
+ */
+function saveBestScore(currentScore) {
+  // The 'Android' object is only available when running in the WebView
+  if (typeof Android !== "undefined" && Android !== null) {
+    Android.saveScore(currentScore);
+  } else {
+    // Fallback for when playing in a web browser
+    console.log(`Game Over! Final Score: ${currentScore}. Android interface not found.`);
+  }
+}
+
+/**
+ * Loads the high score from the native Android interface and sets it in the game.
+ */
+function loadHighScore() {
+    if (typeof Android !== "undefined" && Android !== null) {
+        // Call the native function to get the stored high score
+        highScore = Android.getHighScore();
+        // Set the crisp-game-lib's internal high score variable so it displays automatically
+        hiscore = highScore;
+    } else {
+        console.log("Android interface not found, using default high score.");
+    }
+}
+
 
 function generateNewConnectionRequest() {
   // Get IDs of plugs that are currently in use
@@ -82,6 +115,7 @@ function generateNewConnectionRequest() {
 
 function update() {
   if (!ticks) {
+    // --- Game Initialization ---
     // Initialize: arrange 9 plugs in a circle
     plugs = [];
     const centerX = 50;
@@ -132,7 +166,23 @@ function update() {
     activeConnections = [];
     contractsLost = 0;
     multiplier = 1;
+
+    // --- Load High Score from Android ---
+    loadHighScore();
+
+    // --- Override 'end' function to save score ---
+    // We do this inside the (!ticks) block to ensure the game library
+    // has loaded and the 'end' function is defined before we modify it.
+    const originalEnd = window.end;
+    window.end = function() {
+      // Call our save score function with the current score
+      saveBestScore(score);
+      // Call the original end function to stop the game
+      originalEnd();
+    };
   }
+
+  // --- Game Loop (runs every frame) ---
 
   // Update cursor movement
   cursor.angle +=
