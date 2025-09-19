@@ -9,7 +9,7 @@ options = {
   bgmVolume: 4,
 };
 
-const audioBasePath = "https://appassets.androidplatform.net/assets/media/";
+const audioBasePath = "media/";
 audioFiles = {
   bgm: audioBasePath + "Pixelated_Dreams.mp3",
   conn1: audioBasePath + "connecting_1.mp3",
@@ -31,36 +31,44 @@ let nextRequestTimer;
 let multiplier;
 let highScore = 0;
 
-/**
- * Saves the best score by calling the native Android interface.
- * The function in the Android code is called 'saveScore',
- * and our JavaScript calls it through the 'Android' bridge object.
- * @param {number} currentScore The player's final score.
- */
+// --- 変更点1: ハイスコアをiOSから受け取るためのグローバル関数 ---
+// Swiftから呼び出される
+function setHighScore(score) {
+    highScore = score;
+    // crisp-game-libのハイスコア表示も更新
+    hiscore = score;
+}
+
+
+// --- 変更点2: スコアを保存する関数を修正 ---
 function saveBestScore(currentScore) {
-  // The 'Android' object is only available when running in the WebView
-  if (typeof Android !== "undefined" && Android !== null) {
+  // iOSのネイティブ連携オブジェクトが存在するかチェック
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosApp) {
+    // 存在すれば、iOSのネイティブコードにメッセージを送信
+    window.webkit.messageHandlers.iosApp.postMessage({ command: "saveScore", score: currentScore });
+
+  } else if (typeof Android !== "undefined" && Android !== null) {
     Android.saveScore(currentScore);
   } else {
-    // Fallback for when playing in a web browser
-    console.log(`Game Over! Final Score: ${currentScore}. Android interface not found.`);
+    console.log(`Game Over! Final Score: ${currentScore}. Native interface not found.`);
   }
 }
 
-/**
- * Loads the high score from the native Android interface and sets it in the game.
- */
-function loadHighScore() {
-    if (typeof Android !== "undefined" && Android !== null) {
-        // Call the native function to get the stored high score
-        highScore = Android.getHighScore();
-        // Set the crisp-game-lib's internal high score variable so it displays automatically
-        hiscore = highScore;
-    } else {
-        console.log("Android interface not found, using default high score.");
-    }
-}
 
+// --- 変更点3: スコアを読み込む関数を修正 ---
+function loadHighScore() {
+  // iOSのネイティブ連携オブジェクトが存在するかチェック
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosApp) {
+    // 存在すれば、iOSのネイティブコードにハイスコアを要求
+    window.webkit.messageHandlers.iosApp.postMessage({ command: "getHighScore" });
+
+  } else if (typeof Android !== "undefined" && Android !== null) {
+    highScore = Android.getHighScore();
+    hiscore = highScore;
+  } else {
+    console.log("Native interface not found, using default high score.");
+  }
+}
 
 function generateNewConnectionRequest() {
   // Get IDs of plugs that are currently in use
